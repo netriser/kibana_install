@@ -1,0 +1,4 @@
+---
+# defaults file for kibana_install
+kibana_version: "8.10.1"
+kibana_password: ""
