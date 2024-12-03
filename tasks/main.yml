@@ -1,27 +1,5 @@
 ---
 # tasks file for kibana_install
-
-- name: Check if gpg repo already exists
-  ansible.builtin.stat:
-    path: /usr/share/keyrings/elasticsearch-keyring.gpg
-  register: __elasticsearch_apt_key
-
-- name: Check if repo already exists
-  ansible.builtin.stat:
-    path: /etc/apt/sources.list.d/elasticsearch.list
-  register: __elasticsearch_apt_source
-
-- name: Install the key
-  ansible.builtin.shell: "curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg"
-  when: not __elasticsearch_apt_key.stat.exists
-
-- name: Install the repo
-  ansible.builtin.shell: "echo 'deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main' | sudo tee /etc/apt/sources.list.d/elasticsearch.list"
-  when: not __elasticsearch_apt_source.stat.exists
-  notify: update_apt_cache
-
-- ansible.builtin.meta: flush_handlers
-
 - name: Install kibana packages
   ansible.builtin.apt:
     name: "kibana={{ kibana_version }}"
@@ -42,6 +20,5 @@
   with_items:
     - { regexp: '^#?server.port:', line: 'server.port: 5601' }
     - { regexp: '^#?server.host:', line: 'server.host: "0.0.0.0"' }
-    - { regexp: '^#?server.publicBaseUrl:', line: 'server.publicBaseUrl: "http://{ inventory_hostname }:5601"' }
-    - { regexp: '^#?cluster.initial_master_nodes:', line: "cluster.initial_master_nodes: [{{ elastic_nodes | map('quote') | join(', ') }}]" }
+    - { regexp: '^#?server.publicBaseUrl:', line: 'server.publicBaseUrl: "http://{{ inventory_hostname }}:5601"' }
   notify: restart kibana
