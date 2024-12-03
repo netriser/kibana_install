@@ -33,3 +33,15 @@
   ansible.builtin.dpkg_selections:
     name: kibana
     selection: hold
+
+- name: Configure kibana
+  ansible.builtin.lineinfile:
+    path: /etc/kibana/kibana.yml
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^#?server.port:', line: 'server.port: 5601' }
+    - { regexp: '^#?server.host:', line: 'server.host: "0.0.0.0"' }
+    - { regexp: '^#?server.publicBaseUrl:', line: 'server.publicBaseUrl: "http://{ inventory_hostname }:5601"' }
+    - { regexp: '^#?cluster.initial_master_nodes:', line: "cluster.initial_master_nodes: [{{ elastic_nodes | map('quote') | join(', ') }}]" }
+  notify: restart kibana
