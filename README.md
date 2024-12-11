@@ -1,38 +1,48 @@
-Role Name
-=========
+# Kibana Install Role
 
-A brief description of the role goes here.
+An Ansible role to install and configure Kibana on supported platforms.
 
-Requirements
-------------
+## Features
+- Installs Kibana on Debian- or RHEL-based systems.
+- Configures Kibana for integration with Elasticsearch.
+- Manages Kibana service for startup and runtime configuration.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Requirements
+- Ansible 2.9 or higher.
+- Supported platforms:
+  - **Debian-based systems:** Debian, Ubuntu.
+  - **RHEL-based systems:** CentOS, Rocky Linux, etc.
+- Elasticsearch must be installed and running for Kibana to connect to.
 
-Role Variables
---------------
+## Role Variables
+The following variables can be customized for this role:
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Defaults
+Located in `defaults/main.yml`:
+```yaml
+# Default Kibana version
+kibana_version: "8.10.1"
+```
 
-Dependencies
-------------
+Exemple playbook
+```yaml
+# Exemple playbook
+- name: Install Kibana cluster
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    kibana_version: "8.10.1"
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+  roles:
+  - kibana_install
+```
 
-Example Playbook
-----------------
+## Dependencies
+None.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## License
+MIT
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Author Information
+This role was created by Chakib. Contributions and feedback are welcome!
